@@ -1,0 +1,267 @@
+/* style.css - Estilos responsivos para o Gerenciador de Tarefas */
+
+/* ── Reset e variáveis ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #f4f6fb;
+  --surface:   #ffffff;
+  --border:    #e2e8f0;
+  --text:      #1e293b;
+  --muted:     #64748b;
+  --primary:   #4f46e5;
+  --primary-h: #4338ca;
+  --danger:    #ef4444;
+  --danger-h:  #dc2626;
+  --success:   #22c55e;
+  --warn:      #f59e0b;
+  --radius:    10px;
+  --shadow:    0 2px 12px rgba(0,0,0,.07);
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── Layout ── */
+.container { max-width: 780px; margin: 0 auto; padding: 0 1rem; }
+
+/* ── Cabeçalho ── */
+.header {
+  background: var(--primary);
+  color: #fff;
+  padding: 2rem 0 1.6rem;
+  margin-bottom: 2rem;
+}
+.header h1 { font-size: 1.75rem; }
+.subtitle   { margin-top: .25rem; opacity: .8; font-size: .95rem; }
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+}
+.card h2 { font-size: 1.1rem; margin-bottom: 1.25rem; color: var(--text); }
+
+/* ── Formulário ── */
+.form-group { margin-bottom: 1rem; }
+.form-group label {
+  display: block;
+  font-size: .875rem;
+  font-weight: 600;
+  margin-bottom: .35rem;
+  color: var(--muted);
+}
+.required { color: var(--danger); }
+
+input[type="text"],
+textarea,
+select {
+  width: 100%;
+  padding: .55rem .75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: .95rem;
+  color: var(--text);
+  background: #fff;
+  transition: border-color .2s;
+}
+input[type="text"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79,70,229,.15);
+}
+textarea { resize: vertical; }
+
+.form-actions { display: flex; gap: .75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+
+/* ── Botões ── */
+.btn {
+  padding: .55rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s, transform .1s;
+}
+.btn:active { transform: scale(.97); }
+
+.btn-primary  { background: var(--primary); color: #fff; }
+.btn-primary:hover  { background: var(--primary-h); }
+
+.btn-secondary { background: var(--border); color: var(--text); }
+.btn-secondary:hover { background: #cbd5e1; }
+
+.btn-danger   { background: var(--danger); color: #fff; }
+.btn-danger:hover   { background: var(--danger-h); }
+
+.btn-sm { padding: .3rem .75rem; font-size: .8rem; }
+
+/* ── Cabeçalho da lista ── */
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-bottom: 1.25rem;
+}
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .875rem;
+  color: var(--muted);
+}
+.filter-group select { width: auto; padding: .3rem .6rem; font-size: .85rem; }
+
+/* ── Badge de contagem ── */
+.badge {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 999px;
+  font-size: .75rem;
+  padding: .15rem .55rem;
+  margin-left: .4rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+/* ── Lista de tarefas ── */
+.task-list { list-style: none; display: flex; flex-direction: column; gap: .75rem; }
+
+.task-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: box-shadow .2s;
+  background: #fff;
+}
+.task-item:hover { box-shadow: var(--shadow); }
+
+/* Borda lateral colorida por status */
+.task-item.pending     { border-left: 4px solid var(--warn); }
+.task-item.in_progress { border-left: 4px solid var(--primary); }
+.task-item.done        { border-left: 4px solid var(--success); }
+
+.task-body { flex: 1; min-width: 0; }
+
+.task-title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: .2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.task-item.done .task-title { text-decoration: line-through; color: var(--muted); }
+
+.task-desc {
+  font-size: .875rem;
+  color: var(--muted);
+  margin-bottom: .5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+
+/* Pílula de status */
+.status-pill {
+  display: inline-block;
+  font-size: .75rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: .2rem .65rem;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.status-pill.pending     { background: #fef3c7; color: #92400e; }
+.status-pill.in_progress { background: #ede9fe; color: #4c1d95; }
+.status-pill.done        { background: #dcfce7; color: #14532d; }
+
+.task-date { font-size: .75rem; color: var(--muted); }
+
+/* Ações da tarefa */
+.task-actions { display: flex; gap: .4rem; flex-shrink: 0; }
+
+/* ── Estado vazio ── */
+.empty-state {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--muted);
+  font-size: .95rem;
+}
+
+/* ── Toast de feedback ── */
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: #fff;
+  padding: .75rem 1.5rem;
+  border-radius: 8px;
+  font-size: .9rem;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,.2);
+  z-index: 9999;
+  transition: opacity .3s;
+}
+.toast.success { background: #15803d; }
+.toast.error   { background: var(--danger); }
+.toast.hidden  { display: none; }
+
+/* ── Modal de confirmação ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9000;
+}
+.modal-overlay.hidden { display: none; }
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 2rem;
+  max-width: 360px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,.2);
+  text-align: center;
+}
+.modal p { margin-bottom: 1.5rem; font-size: 1rem; }
+.modal-actions { display: flex; justify-content: center; gap: .75rem; }
+
+/* ── Utilitários ── */
+.hidden { display: none !important; }
+
+/* ── Responsivo ── */
+@media (max-width: 540px) {
+  .header h1 { font-size: 1.4rem; }
+  .task-item  { flex-direction: column; }
+  .task-actions { align-self: flex-end; }
+  .list-header  { flex-direction: column; align-items: flex-start; }
+}
