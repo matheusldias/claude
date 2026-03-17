@@ -47,6 +47,27 @@ export default function Layout({ children, currentPageName }) {
     return <div className="min-h-screen bg-gray-950">{children}</div>;
   }
 
+  // Bloquear alunos sem loja vinculada
+  if (user && isAluno && !user.store_id) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mx-auto mb-6">
+            <GraduationCap className="w-8 h-8 text-slate-400" />
+          </div>
+          <h2 className="text-xl font-bold text-white mb-2">Acesso Restrito</h2>
+          <p className="text-slate-400 mb-6">
+            Sua conta ainda não está vinculada a uma loja. Entre em contato com o administrador para liberar seu acesso.
+          </p>
+          <Button onClick={handleLogout} variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800">
+            <LogOut className="w-4 h-4 mr-2" />
+            Sair
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const adminNav = [
     { name: 'Gerenciar Cursos', icon: LayoutDashboard, url: createPageUrl('AdminDashboard') },
     { name: 'Alunos', icon: Users, url: createPageUrl('AdminStudents') },

@@ -20,6 +20,7 @@ import {
   Lock,
   FileText,
   Image as ImageIcon,
+  GraduationCap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -77,8 +78,18 @@ export default function Player() {
   const { data: lessons = [] } = useQuery({
     queryKey: ['courseLessons', courseId, isAdmin],
     queryFn: async () => {
-      const all = await base44.entities.Lesson.filter({ course_id: courseId }, 'order');
-      return isAdmin ? all : all.filter(l => l.status !== 'draft');
+      const [all, moduleList] = await Promise.all([
+        base44.entities.Lesson.filter({ course_id: courseId }, 'order'),
+        base44.entities.Module.filter({ course_id: courseId }, 'order'),
+      ]);
+      // Ordenar por módulo primeiro, depois por order dentro do módulo
+      const sorted = [...all].sort((a, b) => {
+        const moduleAIdx = moduleList.findIndex(m => m.id === a.module_id);
+        const moduleBIdx = moduleList.findIndex(m => m.id === b.module_id);
+        if (moduleAIdx !== moduleBIdx) return moduleAIdx - moduleBIdx;
+        return (a.order || 0) - (b.order || 0);
+      });
+      return isAdmin ? sorted : sorted.filter(l => l.status !== 'draft');
     },
     enabled: !!courseId && user !== undefined,
     staleTime: 5 * 60 * 1000,
@@ -227,6 +238,10 @@ export default function Player() {
   useEffect(() => {
     setCanComplete(false);
     setIsCompleting(false);
+    setCurrentTime(0);
+    setDuration(0);
+    ytCurrentTimeRef.current = 0;
+    ytDurationRef.current = 0;
   }, [lessonId]);
 
   useEffect(() => {
@@ -517,6 +532,30 @@ export default function Player() {
   const getLessonsForModule = (moduleId) => {
     return lessons.filter(l => l.module_id === moduleId);
   };
+
+  // Bloquear alunos sem loja vinculada
+  const isAluno = user?.role === 'user' && (!user?.custom_role || user?.custom_role === 'aluno');
+  if (user && isAluno && !user.store_id) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mx-auto mb-6">
+            <GraduationCap className="w-8 h-8 text-slate-400" />
+          </div>
+          <h2 className="text-xl font-bold text-white mb-2">Acesso Restrito</h2>
+          <p className="text-slate-400 mb-6">
+            Sua conta ainda não está vinculada a uma loja. Entre em contato com o administrador para liberar seu acesso.
+          </p>
+          <button
+            onClick={() => base44.auth.logout(window.location.href)}
+            className="px-4 py-2 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 transition-colors"
+          >
+            Sair
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!lesson) {
     return (
